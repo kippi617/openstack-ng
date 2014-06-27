@@ -1,4 +1,3 @@
-#test
 ---
 
 - hosts: glance
