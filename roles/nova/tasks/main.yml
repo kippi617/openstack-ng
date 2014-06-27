@@ -3,14 +3,14 @@
 - name: install nova and dependencies
   yum: name={{ item }} state=present
   with_items: 
-  - libvirt
-  - openstack-nova
-  - openstack-nova-api
-  - openstack-nova-scheduler
-  - openstack-nova-conductor
-  - openstack-nova-compute
-  - openstack-nova-cert
-  - openstack-nova-console
+  - libvirt0
+  - nova-common
+  - nova-api
+  - nova-scheduler
+  - nova-conductor
+  - nova-compute
+  - nova-cert
+  - nova-console
 
 - name: start and enable libvirtd
   service: name=libvirtd state=started enabled=yes
