@@ -58,10 +58,6 @@ rabbit_password={{ rabbit_password }}
 # (integer value)
 #qpid_topology_version=1
 
-# notification_driver=qpid
-{% for h in groups['qpid'] %}
-qpid_hostname={{ h }}
-{% endfor %}
 
 # SSL version to use (valid only if SSL enabled). valid values
 # are TLSv1, SSLv23 and SSLv3. SSLv2 may be available on some
@@ -2087,8 +2083,8 @@ vncserver_listen = 0.0.0.0
 
 # The address to which proxy clients (like nova-xvpvncproxy)
 # should connect (string value)
-#vncserver_proxyclient_address=127.0.0.1
-vncserver_proxyclient_address = 10.0.0.31
+vncserver_proxyclient_address=127.0.0.1
+#vncserver_proxyclient_address = 10.0.0.31
 
 # Enable VNC related features (boolean value)
 #vnc_enabled=true

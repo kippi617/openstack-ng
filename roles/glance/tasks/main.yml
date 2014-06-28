@@ -29,16 +29,20 @@
   - registry
   - api
 
-# start glance
-- name: start glance
-  service: name=glance-{{ item }} state=started enabled=yes
-  with_items:
-  - registry
-  - api
-
+#By default, the Ubuntu packages create an SQLite database. Delete the glance.sqlite file created in the /var/lib/glance/
+- name: Remove default glance.sqlite DB
+  file:  path=/var/lib/glance/glance.sqlite state=absent
 
 # # Initialize the database schema. A deprecation warning is OK...
 # sudo -u glance glance-manage db_sync
 
 - name: db sync
   shell: glance-manage db_sync
+
+
+# start glance
+- name: start glance
+  service: name=glance-{{ item }} state=started enabled=yes
+  with_items:
+  - registry
+  - api

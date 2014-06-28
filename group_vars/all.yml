@@ -42,3 +42,8 @@ neutron_force_init: True
 nova_force_init: True
 
 virtual_deploy: True
+
+
+# RabbitMQ
+rabbit_host: controller
+rabbit_password: passw0rd
