@@ -2,7 +2,7 @@
 
 - name: install nova and dependencies
   yum: name={{ item }} state=present
-  with_items: 
+  with_items:
   - libvirt0
   - nova-common
   - nova-api
@@ -31,14 +31,14 @@
   - nova-console
 
 - name: drop nova DB
-  mysql_db: name={{ mysql_nova_db }} state=absent login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_nova_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
   when: nova_force_init == True
-  
+
 - name: create nova DB
-  mysql_db: name={{ mysql_nova_db }} state=present login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_nova_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
 
 - name: create nova user
-  mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL login_user=root login_password=''
+  mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL  login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
   with_items: groups['nova']
 
 - name: configure nova
@@ -47,7 +47,7 @@
 - name: initialize DB
   shell: nova-manage db sync
   when: nova_force_init == True
-  
+
 - name: start and enable nova services
   service: name=openstack-{{ item }} state=started enabled=yes
   with_items:
@@ -57,4 +57,3 @@
   - nova-compute
   - nova-cert
   - nova-console
-

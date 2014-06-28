@@ -1,46 +1,44 @@
 ---
 
 - name: install glance
-  yum: name=openstack-glance state=present
+  apt: name=glance state=present
 
 - name: stop glance
-  service: name=openstack-glance-{{ item }} state=stopped
+  service: name=glance-{{ item }} state=stopped
   when: glance_force_init == True
   with_items:
   - registry
   - api
 
 - name: drop glance DB
-  mysql_db: name={{ mysql_glance_db }} state=absent login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_glance_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
   when: glance_force_init == True
-  
+
 - name: create glance DB
-  mysql_db: name={{ mysql_glance_db }} state=present login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_glance_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
 
 - name: create glance user
-  mysql_user: name={{ mysql_glance_user }} state=present host='{{ item }}' password="{{ mysql_glance_password }}" priv={{ mysql_glance_db }}.*:ALL login_user=root login_password=''
+  mysql_user: name={{ mysql_glance_user }} state=present host='{{ item }}' password="{{ mysql_glance_password }}" priv={{ mysql_glance_db }}.*:ALL login_user={{ mysql_login_user }} login_password={{ mysql_login_password }} login_host={{ mysql_login_host }}
   with_items: groups['glance']
 
 # configure glance-api.conf
 # configure glance-regsitry.conf
 - name: configure glance services
   template: src=glance-{{ item }}.conf.j2 dest=/etc/glance/glance-{{ item }}.conf backup=yes
-  with_items: 
+  with_items:
   - registry
   - api
 
 # start glance
 - name: start glance
-  service: name=openstack-glance-{{ item }} state=started enabled=yes
+  service: name=glance-{{ item }} state=started enabled=yes
   with_items:
   - registry
   - api
 
-  
+
 # # Initialize the database schema. A deprecation warning is OK...
 # sudo -u glance glance-manage db_sync
 
 - name: db sync
   shell: glance-manage db_sync
-
-

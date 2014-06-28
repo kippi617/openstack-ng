@@ -1,6 +1,8 @@
 [DEFAULT]
+rpc_backend=rabbit
+rabbit_host=
 # Show more verbose log output (sets INFO log level output)
-#verbose=True
+verbose=True
 
 # Show debugging output in logs (sets DEBUG log level output)
 #debug=False
@@ -232,22 +234,23 @@
 # notifier_strategy = default
 
 # Driver or drivers to handle sending notifications
-notification_driver = qpid
+#notification_driver = qpid
+notification_driver=rabbit
 
 # Default publisher_id for outgoing notifications.
 # default_publisher_id = image.localhost
 
 # Configuration options if sending notifications via rabbitmq (these are
 # the defaults)
-#rabbit_host=localhost
-#rabbit_port=5672
-#rabbit_use_ssl=false
-#rabbit_userid=guest
-#rabbit_password=guest
-#rabbit_virtual_host=/
-#rabbit_notification_exchange=glance
-#rabbit_notification_topic=notifications
-#rabbit_durable_queues=False
+rabbit_host=localhost
+rabbit_port=5672
+rabbit_use_ssl=false
+rabbit_userid=guest
+rabbit_password=guest
+rabbit_virtual_host=/
+rabbit_notification_exchange=glance
+rabbit_notification_topic=notifications
+rabbit_durable_queues=False
 
 # Configuration options if sending notifications via Qpid (these are
 # the defaults)

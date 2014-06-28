@@ -5,6 +5,7 @@ admin_token: 1231412342341234wqwe
 ### MySQL DB info
 mysql_login_user: root
 mysql_login_password: ''
+mysql_login_host: 'controller'
 
 ## MySQL Databases for each service ##
 mysql_keystone_db: keystonedb
@@ -29,7 +30,7 @@ keystone_admin_password: adminXX
 keystone_admin_email: admin@example.com
 keystone_admin_tenant: admin
 
-# do not change below setting, otherwise you'll have 
+# do not change below setting, otherwise you'll have
 # you'll have to overhaul security policies as well
 keystone_admin_role: admin
 

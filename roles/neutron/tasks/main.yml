@@ -20,14 +20,14 @@
   - openvswitch
 
 - name: drop neutron DB
-  mysql_db: name={{ mysql_neutron_db }} state=absent login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_neutron_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
   when: neutron_force_init == True
-  
+
 - name: create neutron DB
-  mysql_db: name={{ mysql_neutron_db }} state=present login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  mysql_db: name={{ mysql_neutron_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
 
 - name: create neutron user
-  mysql_user: name={{ mysql_neutron_user }} state=present host='{{ item }}' password="{{ mysql_neutron_password }}" priv={{ mysql_glance_db }}.*:ALL login_user=root login_password=''
+  mysql_user: name={{ mysql_neutron_user }} state=present host='{{ item }}' password="{{ mysql_neutron_password }}" priv={{ mysql_glance_db }}.*:ALL login_user={{ mysql_login_user }} login_password={{ mysql_login_password }} login_host={{ mysql_login_host }}
   with_items: groups['neutron']
 
 - name: configure NEutron & OpenVSwitch plugin
@@ -53,7 +53,7 @@
 - name: create external bridge
   openvswitch_bridge: bridge=br-ex state=present
 
-- name: start neutron 
+- name: start neutron
   service: name={{ item }} state=started enabled=yes
   with_items:
   - neutron-server
@@ -74,4 +74,3 @@
 ##FIXME
 - name: add OVS port
   openvswitch_port: bridge=br-ex port={{ phys_net_interface }} state=present
-
