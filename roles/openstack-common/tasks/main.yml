@@ -1,10 +1,10 @@
 ---
 
-- name: install RDO repo
-  yum: name=http://rdo.fedorapeople.org/rdo-release.rpm state=present
+- name: Add cloud-archive repository
+  apt_repository: repo=cloud-archive:icehouse state=present update_cache=yes
 
-- name: install openstack-utils
-  yum: name=openstack-utils state=present
+#- name: install openstack-utils
+#  yum: name=openstack-utils state=present
 
-- name: install SELinux bindings
-  yum: name=libselinux-python state=present
+#- name: install SELinux bindings
+#  yum: name=libselinux-python state=present
