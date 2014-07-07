@@ -4,6 +4,10 @@
 ### workaround for Jinja bug
 ### https://github.com/ansible/ansible/issues/7799
 - hosts: keystone
+  environment:
+    OS_USERNAME:{{ keystone_admin_username }}
+    OS_PASSWORD:{{ keystone_admin_password }}
+    OS_TENANT_NAME:{{ keystone_admin_tenant }}
   tasks:
     - set_fact: keystone_service_admin_ip={{ keystone_service_admin_ip }}
     - set_fact: keystone_service_public_ip={{ keystone_service_public_ip }}
