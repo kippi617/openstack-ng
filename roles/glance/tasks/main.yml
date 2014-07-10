@@ -1,5 +1,4 @@
 ---
-
 - name: install glance
   apt: name=glance state=present
 
@@ -36,13 +35,15 @@
 # # Initialize the database schema. A deprecation warning is OK...
 # sudo -u glance glance-manage db_sync
 
-- name: db sync
-  shell: glance-manage db_sync
+- name: Glance db sync
+  glance_manage: action=db_sync
 
+- name: Register glance on keystone
+  keystone_service: token={{ admin_token }} name=glance type=image description="OpenStack Image Service" public_url="http://{{ glance_service_public_ip }}:9292"
 
 # start glance
-- name: start glance
-  service: name=glance-{{ item }} state=started enabled=yes
+- name: restart glance
+  service: name=glance-{{ item }} state=restarted enabled=yes
   with_items:
   - registry
   - api
