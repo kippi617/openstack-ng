@@ -100,14 +100,14 @@ auth_strategy = keystone
 # Attention: the following parameter MUST be set to False if Neutron is
 # being used in conjunction with nova security groups
 # allow_overlapping_ips = True
-allow_overlapping_ips = False
+allow_overlapping_ips = True
 # Ensure that configured gateway is on subnet
 # force_gateway_on_subnet = False
 
 
 # RPC configuration options. Defined in rpc __init__
 # The messaging module to use, defaults to kombu.
-# rpc_backend = neutron.openstack.common.rpc.impl_kombu
+rpc_backend = neutron.openstack.common.rpc.impl_kombu
 # Size of RPC thread pool
 # rpc_thread_pool_size = 64
 # Size of RPC connection pool
@@ -136,9 +136,9 @@ allow_overlapping_ips = False
 # SSL certification authority file (valid only if SSL enabled)
 # kombu_ssl_ca_certs =
 # IP address of the RabbitMQ installation
-# rabbit_host = localhost
+rabbit_host = {{ rabbit_host }}
 # Password of the RabbitMQ server
-# rabbit_password = guest
+rabbit_password = {{ rabbit_password }}
 # Port where RabbitMQ server is running/listening
 # rabbit_port = 5672
 # RabbitMQ single or HA cluster (host:port pairs i.e: host1:5672, host2:5672)
@@ -179,10 +179,10 @@ allow_overlapping_ips = False
 # Disable Nagle algorithm
 # qpid_tcp_nodelay = True
 
-rpc_backend=neutron.openstack.common.rpc.impl_qpid
-{% for h in groups['qpid'] %}
-qpid_hostname={{ h }}
-{% endfor %}
+#rpc_backend=neutron.openstack.common.rpc.impl_qpid
+#{% for h in groups['qpid'] %}
+#qpid_hostname={{ h }}
+#{% endfor %}
 
 # ZMQ
 # rpc_backend=neutron.openstack.common.rpc.impl_zmq
@@ -431,8 +431,8 @@ auth_port=35357
 auth_protocol=http
 
 admin_tenant_name={{ service_tenant }}
-admin_user={{ glance_service_user }}
-admin_password={{ glance_service_user_password }}
+admin_user={{ neutron_service_user }}
+admin_password={{ neutron_service_user_password }}
 
 
 [database]
