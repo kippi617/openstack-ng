@@ -9,6 +9,9 @@
 - name: Make kernel readable from non root users
   shell: dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
 
+- name: Make kernel readable from non root persistent
+  copy: src=templates/statoverride dest=/etc/kernel/postinst.d/statoverride owner=root mode=0755
+
 - name: stop nova services
   service: name={{ item }} state=stopped
   when: nova_force_init == True
@@ -33,10 +36,10 @@
   file: path=/var/lib/nova/nova.sqlite state=absent
 
 - name: initialize DB
-  shell: nova-manage db sync
+  nova_manage: action=db_sync
   when: nova_force_init == True
 
 - name: start and enable nova services
-  service: name={{ item }} state=started enabled=yes
+  service: name={{ item }} state=restarted enabled=yes
   with_items:
   - nova-compute
