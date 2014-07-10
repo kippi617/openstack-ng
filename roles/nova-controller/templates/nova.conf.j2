@@ -2079,11 +2079,11 @@ novncproxy_base_url = http://{{nova_service_public_ip}}:6080/vnc_auto.html
 # IP address on which instance vncservers should listen
 # (string value)
 #vncserver_listen=127.0.0.1
-vncserver_listen = 0.0.0.0
+vncserver_listen = {{ nova_service_public_ip }}
 
 # The address to which proxy clients (like nova-xvpvncproxy)
 # should connect (string value)
-vncserver_proxyclient_address=127.0.0.1
+vncserver_proxyclient_address={{ nova_service_public_ip }}
 #vncserver_proxyclient_address = 10.0.0.31
 
 # Enable VNC related features (boolean value)
