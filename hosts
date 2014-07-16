@@ -1,20 +1,21 @@
 [qpid]
-192.168.0.138 ansible_ssh_user=root
+controller 
 
 [mysql]
-192.168.0.138 ansible_ssh_user=root
+controller 
 
 [keystone]
-192.168.0.138 ansible_ssh_user=root
+controller 
 
 [nova]
-192.168.0.138 ansible_ssh_user=root
+compute1
+compute2 
 
 [cinder]
-192.168.0.138 ansible_ssh_user=root
+controller 
 
 [glance]
-192.168.0.138 ansible_ssh_user=root
+controller 
 
 [neutron]
-192.168.0.138 ansible_ssh_user=root
+network 

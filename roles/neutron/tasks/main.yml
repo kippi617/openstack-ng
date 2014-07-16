@@ -2,36 +2,35 @@
 # Loosely based on:
 # http://docs.openstack.org/icehouse/install-guide/install/yum/content/neutron-ml2-controller-node.html
 #
-
-
-
-- name: modify sysctl
-  sysctl: name={{ item.name }} value={{ item.value }} state=present
-  with_items:
-  - { 'name':'net.ipv4.ip_forward', 'value':'1' }
-  - { 'name':'net.ipv4.conf.all.rp_filter', 'value':'0' }
-  - { 'name':'net.ipv4.conf.default.rp_filter', 'value':'0' }
-
-
 - name: install neutron and dependencies
-  apt: name={{ item }} state=present
+  yum: name={{ item }} state=present
   with_items:
-  - neutron-plugin-ml2
-  - neutron-plugin-openvswitch-agent
-  - neutron-l3-agent
-  - neutron-dhcp-agent
-  - openvswitch
+  - openstack-neutron
+  - openstack-neutron-openvswitch
+  - openstack-neutron-ml2
 
 - name: stop neutron & openvswitch
   service: name={{ item }} state=stopped
   when: neutron_force_init == True
   with_items:
-  - neutron-plugin-openvswitch-agent
+  - neutron-server
+  - neutron-openvswitch-agent
   - neutron-dhcp-agent
   - neutron-l3-agent
-  - neutron-plugin-ml2
+  - openvswitch
 
-- name: configure Neutron & OpenVSwitch plugin
+- name: drop neutron DB
+  mysql_db: name={{ mysql_neutron_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+  when: neutron_force_init == True
+
+- name: create neutron DB
+  mysql_db: name={{ mysql_neutron_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
+
+- name: create neutron user
+  mysql_user: name={{ mysql_neutron_user }} state=present host='{{ item }}' password="{{ mysql_neutron_password }}" priv={{ mysql_glance_db }}.*:ALL login_user={{ mysql_login_user }} login_password={{ mysql_login_password }} login_host={{ mysql_login_host }}
+  with_items: groups['neutron']
+
+- name: configure NEutron & OpenVSwitch plugin
   template: src={{ item.src }} dest={{ item.dest }} backup=yes
   with_items:
   - { 'src': 'neutron.conf.j2', 'dest':'/etc/neutron/neutron.conf' }
@@ -44,7 +43,7 @@
   file: src=/etc/neutron/plugins/ml2/ml2_conf.ini dest=/etc/neutron/plugin.ini state=link force=yes
 
 - name: start OpenVSwitch
-  service: name=openvswitch-switch state=restarted enabled=yes
+  service: name=openvswitch state=started enabled=yes
 
 # referenced in /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini
 - name: create integration bridge
@@ -54,13 +53,24 @@
 - name: create external bridge
   openvswitch_bridge: bridge=br-ex state=present
 
+- name: start neutron
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+  - neutron-server
+  - neutron-openvswitch-agent
+  - neutron-dhcp-agent
+  - neutron-l3-agent
+
+
+# network node
+
+- name: modify sysctl
+  sysctl: name={{ item.name }} value={{ item.value }} state=present
+  with_items:
+  - { 'name':'net.ipv4.ip_forward', 'value':'1' }
+  - { 'name':'net.ipv4.conf.all.rp_filter', 'value':'0' }
+  - { 'name':'net.ipv4.conf.default.rp_filter', 'value':'0' }
+
+##FIXME
 - name: add OVS port
   openvswitch_port: bridge=br-ex port={{ phys_net_interface }} state=present
-
-- name: start neutron
-  service: name={{ item }} state=restarted enabled=yes
-  with_items:
-    - neutron-plugin-openvswitch-agent
-    - neutron-l3-agent
-    - neutron-dhcp-agent
-    - neutron-metadata-agent
