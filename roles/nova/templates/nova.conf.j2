@@ -58,11 +58,6 @@ rabbit_password={{ rabbit_password }}
 # (integer value)
 #qpid_topology_version=1
 
-# notification_driver=qpid
-{% for h in groups['qpid'] %}
-qpid_hostname={{ h }}
-{% endfor %}
-
 # SSL version to use (valid only if SSL enabled). valid values
 # are TLSv1, SSLv23 and SSLv3. SSLv2 may be available on some
 # distributions. (string value)
@@ -1519,7 +1514,7 @@ neutron_admin_tenant_name=Services
 # Region name for connecting to neutron in admin context
 # (string value)
 #neutron_region_name=<None>
-neutron_region_name={{ neutron_service_region }}
+neutron_region_name={{ myvars.neutron_service_region }}
 
 # Authorization URL for connecting to neutron in admin context
 # (string value)

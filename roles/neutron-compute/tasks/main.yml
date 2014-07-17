@@ -12,7 +12,7 @@
     - neutron-plugin-ml2
 
 - name: Configure Neutron
-  template: src{{ item.src }} dest={{ item.dest }} backup=yes
+  template: src={{ item.src }} dest={{ item.dest }} backup=yes
   with_items:
     - { 'src': 'neutron.conf.j2', 'dest': '/etc/neutron/neutron.conf' }
     - { 'src': 'ml2_conf.ini.conf.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }

@@ -17,7 +17,7 @@
   - neutron-plugin-openvswitch-agent
   - neutron-l3-agent
   - neutron-dhcp-agent
-  
+
 - name: stop neutron & openvswitch
   service: name={{ item }} state=stopped
   when: neutron_force_init == True
@@ -60,5 +60,3 @@
   - neutron-l3-agent
   - neutron-dhcp-agent
   - neutron-metadata-agent
-  
-  
