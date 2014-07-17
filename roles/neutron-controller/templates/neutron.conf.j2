@@ -318,7 +318,7 @@ notify_nova_on_port_data_changes = True
 # nova_url = http://127.0.0.1:8774
 {% for h in groups['nova'] %}
 {% set myvars=hostvars[h] %}
-nova_url = http://{{ h }}:8774
+nova_url = http://{{ h }}:8774/v2
 
 # Name of nova region to use. Useful if keystone manages more than one region
 nova_region_name = {{ myvars.nova_service_region }}
@@ -443,7 +443,7 @@ admin_password={{ neutron_service_user_password }}
 # main neutron server. (Leave it as is if the database runs on this host.)
 # cconnection = sqlite://
 
-##DIMON connection=mysql://{{ mysql_neutron_user }}:{{ mysql_neutron_password }}@{{ groups['mysql'][0] }}/{{ mysql_neutron_db }}
+connection=mysql://{{ mysql_neutron_user }}:{{ mysql_neutron_password }}@{{ groups['mysql'][0] }}/{{ mysql_neutron_db }}
 
 # The SQLAlchemy connection string used to connect to the slave database
 # slave_connection =

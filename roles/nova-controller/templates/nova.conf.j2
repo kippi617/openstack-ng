@@ -1510,7 +1510,7 @@ neutron_admin_password={{ myvars.neutron_service_user_password }}
 # Note that with Keystone V3 tenant names are only unique
 # within a domain. (string value)
 #neutron_admin_tenant_name=<None>
-neutron_admin_tenant_name=Services
+neutron_admin_tenant_name={{ myvars.neutron_service_tenant }}
 
 # Region name for connecting to neutron in admin context
 # (string value)
