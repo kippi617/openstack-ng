@@ -19,7 +19,7 @@
   keystone_user: token={{ admin_token }} user={{ neutron_service_user }} password={{ neutron_service_password }} tenant={{ neutron_service_tenant }} email={{ keystone_admin_email }}
 
 - name: Create neutron keystone service
-  keyston_service: token={{ admin_token }} name=neutron type=network description="Openstack Networking" public_url='http://{{ neutron_service_public_ip }}:9696'
+  keystone_service: token={{ admin_token }} name=neutron type=network description="Openstack Networking" public_url='http://{{ neutron_service_public_ip }}:9696'
 
 - name: Install required networking components
   apt: name={{ item }} state=present

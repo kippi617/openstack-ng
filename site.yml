@@ -1,13 +1,8 @@
 ---
-
 ############################
 ### workaround for Jinja bug
 ### https://github.com/ansible/ansible/issues/7799
 - hosts: keystone
-  environment:
-    OS_USERNAME:{{ keystone_admin_username }}
-    OS_PASSWORD:{{ keystone_admin_password }}
-    OS_TENANT_NAME:{{ keystone_admin_tenant }}
   tasks:
     - set_fact: keystone_service_admin_ip={{ keystone_service_admin_ip }}
     - set_fact: keystone_service_public_ip={{ keystone_service_public_ip }}
@@ -42,35 +37,47 @@
 ############################
 
 - hosts: mysql
+  sudo: yes
   roles:
   - role: mysql
 
 
-- hosts: qpid
+- hosts: rabbit
+  sudo: yes
   roles:
-  - role: qpid
+  - role: rabbit
 
 
 - hosts: keystone
+  sudo: yes
   roles:
   - role: openstack-common
   - role: keystone
 
 - hosts: glance
+  sudo: yes
   roles:
   - role: openstack-common
   - role: glance
 
 - hosts: neutron
+  sudo: yes
   roles:
   - role: openstack-common
   - role: neutron
 
 - hosts: nova
+  sudo: yes
   roles:
   - role: openstack-common
   - role: nova
+  - role: neutron-compute
 
 - hosts: controller
+  sudo: yes
+  roles:
+    - role: nova-controller
+    - role: neutron-controller
+
   tasks:
     - include: tasks/networks_setup.yml

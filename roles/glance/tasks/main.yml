@@ -39,7 +39,7 @@
   glance_manage: action=db_sync
 
 - name: Register glance on keystone
-  keystone_service: token={{ admin_token }} name=glance type=image description="OpenStack Image Service" public_url="http://{{ glance_service_public_ip }}:9292"
+  keystone_service: token={{ admin_token }} name=glance type=image description="OpenStack Image Service" public_url="http://{{ glance_service_public_ip }}:9292" region=regionOne
 
 # start glance
 - name: restart glance

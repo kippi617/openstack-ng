@@ -27,7 +27,7 @@
   - neutron-dhcp-agent
   - neutron-metadata-agent
 
-- name: configure NEutron & OpenVSwitch plugin
+- name: configure Neutron & OpenVSwitch plugin
   template: src={{ item.src }} dest={{ item.dest }} backup=yes
   with_items:
   - { 'src': 'neutron.conf.j2', 'dest':'/etc/neutron/neutron.conf' }

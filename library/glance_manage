@@ -30,14 +30,7 @@ from glance.openstack.common import gettextutils
 gettextutils.install('glance')
 import glance.db.sqlalchemy.api
 
-try:
-    from glance.db.sqlalchemy import migration
-    from glance.common.exception import DatabaseMigrationError
-    from migrate.versioning import api as versioning_api
-except ImportError:
-    glance_found = False
-else:
-    glance_found = True
+glance_found = True
 
 import subprocess
 
@@ -103,9 +96,8 @@ def main():
 
     conf = module.params['conf']
 
-    changed = will_db_change(conf)
     if module.check_mode:
-        module.exit_json(changed=changed)
+        module.exit_json(changed=True)
 
     if not is_under_version_control(conf):
         (res, stdout, stderr) = put_under_version_control()

@@ -133,9 +133,9 @@ public_port=5000
 # Qpid broker hostname. (string value)
 #qpid_hostname=localhost
 #
-{% for qpid in groups['qpid'] %}
-qpid_hostname={{ qpid }}
-{% endfor %}
+# {% for qpid in groups['qpid'] %}
+# qpid_hostname={{ qpid }}
+# {% endfor %}
 
 # Qpid broker port. (integer value)
 #qpid_port=5672

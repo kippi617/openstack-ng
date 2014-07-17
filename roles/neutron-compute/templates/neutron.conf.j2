@@ -179,10 +179,6 @@ rabbit_password = {{ rabbit_password }}
 # Disable Nagle algorithm
 # qpid_tcp_nodelay = True
 
-#rpc_backend=neutron.openstack.common.rpc.impl_qpid
-#{% for h in groups['qpid'] %}
-#qpid_hostname={{ h }}
-#{% endfor %}
 
 # ZMQ
 # rpc_backend=neutron.openstack.common.rpc.impl_zmq

@@ -27,16 +27,8 @@ keystone_manage: action=dbsync
 import subprocess
 
 try:
-    # this is necessary starting from havana release due to bug 885529
-    # https://bugs.launchpad.net/glance/+bug/885529
-    from keystone.openstack.common import gettextutils
-    gettextutils.install('keystone')
-except AttributeError:
-    # this is not havana
-    pass
-
-try:
-    from keystone.common.sql import migration
+    # from keystone.common.sql import migration_helpers as migration
+    from oslo.db.sqlalchemy import migration
     from migrate.versioning import api as versioning_api
 except ImportError:
     keystone_found = False
@@ -94,9 +86,10 @@ def main():
     if action not in ['dbsync', 'db_sync']:
         module.fail_json(msg="Only supported action is 'dbsync'")
 
-    changed = will_db_change(conf)
+    # changed = will_db_change(conf)
     if module.check_mode:
-        module.exit_json(changed=changed)
+        # module.exit_json(changed=changed)
+        module.exit_json(changed=True)
 
     (res, stdout, stderr) = do_dbsync()
 
