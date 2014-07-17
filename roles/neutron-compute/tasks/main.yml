@@ -15,7 +15,7 @@
   template: src={{ item.src }} dest={{ item.dest }} backup=yes
   with_items:
     - { 'src': 'neutron.conf.j2', 'dest': '/etc/neutron/neutron.conf' }
-    - { 'src': 'ml2_conf.ini.conf.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
+    - { 'src': 'ml2_conf.ini.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
 
 - name: Restart OpenVSwtich
   service: name=openvswitch-switch state=restarted
@@ -24,7 +24,7 @@
   openvswitch_bridge: bridge=br-int state=present
 
 - name: Restarting Services
-  service: name:{{ item }} state=restarted
+  service: name={{ item }} state=restarted
   with_items:
     - nova-compute
     - neutron-plugin-openvswitch-agent

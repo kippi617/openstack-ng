@@ -87,6 +87,7 @@ def main():
         module.fail_json(msg="Only supported action is 'dbsync'")
 
     # changed = will_db_change(conf)
+    changed = True
     if module.check_mode:
         # module.exit_json(changed=changed)
         module.exit_json(changed=True)

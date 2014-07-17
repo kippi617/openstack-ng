@@ -69,6 +69,9 @@ firewall_driver=neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallD
 enable_security_group=True
 
 [ovs]
-local_ip={{ instance_tunnels_interface_ip }}
+{% for h in groups['neutron'] %}
+{% set neutronvars = hostvars[h] %}
+local_ip={{ neutronvars.instance_tunnels_interface_ip }}
+{% endfor %}
 tunnel_type gre
 enable_tunneling=True

@@ -51,25 +51,25 @@
 - hosts: keystone
   sudo: yes
   roles:
-  - role: openstack-common
+  
   - role: keystone
 
 - hosts: glance
   sudo: yes
   roles:
-  - role: openstack-common
+  
   - role: glance
 
 - hosts: neutron
   sudo: yes
   roles:
-  - role: openstack-common
+  
   - role: neutron
 
 - hosts: nova
   sudo: yes
   roles:
-  - role: openstack-common
+  
   - role: nova
   - role: neutron-compute
 

@@ -40,10 +40,6 @@
   service: name=keystone state=started
   when: keystone_force_init == True
 
-- name: db sync
-  shell: keystone-manage db_sync
-  notify: restart keystone
-
 ##OStack  environment:
 ##OStack    SERVICE_TOKEN: "{{ admin_token }}"
 ##OStack    SERVICE_ENDPOINT: http://{{ ansible_default_ipv4['address'] }}:35357/v2.0
@@ -56,35 +52,35 @@
 
 - name: Keystone db_sync
   keystone_manage: action=dbsync
-
-- name: Restart keystone
+  
+- name: Restart Keystone
   service: name=keystone state=restarted
 
 ## ADMIN USER
-- name: Create keystone admin user
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" user={{ keystone_admin_username }} password={{ keystone_admin_password }} tenant={{ keystone_admin_tenant }} email={{ keystone_admin_email }}
-
 - name: Create keystone admin tenant
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" tenant={{ keystone_admin_tenant }} tenant_description="Admin Tenant"
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" tenant={{ keystone_admin_tenant }} tenant_description="Admin Tenant"
+
+- name: Create keystone admin user
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" user={{ keystone_admin_username }} password={{ keystone_admin_password }} tenant={{ keystone_admin_tenant }} email={{ keystone_admin_email }}
 
 - name: Create keystone admin role and link admin user
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" role=admin user={{ keystone_admin_username }} tenant={{ keystone_admin_tenant }}
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=admin user={{ keystone_admin_username }} tenant={{ keystone_admin_tenant }}
 
 - name: Add role _member_ to admin
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" role=_member_ tenant={{ keystone_admin_tenant }} user={{ keystone_admin_username }}
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=_member_ tenant={{ keystone_admin_tenant }} user={{ keystone_admin_username }}
 
 ## DEMO USER
-- name: Create keystone demo user
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" user={{ keystone_demo_username }} password={{ keystone_demo_password }} tenant={{ keystone_demo_tenant }} email={{ keystone_demo_email }}
-
 - name: Create keystone demo tenant
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" tenant={{ keystone_demo_tenant }} tenant_description="Admin Tenant"
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" tenant={{ keystone_demo_tenant }} tenant_description="Admin Tenant"
+
+- name: Create keystone demo user
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" user={{ keystone_demo_username }} password={{ keystone_demo_password }} tenant={{ keystone_demo_tenant }} email={{ keystone_demo_email }}
 
 - name: Create keystone demo role and link demo user
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" role=admin user={{ keystone_demo_username }} tenant={{ keystone_demo_tenant }}
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=admin user={{ keystone_demo_username }} tenant={{ keystone_demo_tenant }}
 
 - name: Add role _member_ to demo
-  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_public_ip }}:35357/v2.0/" role=_member_ tenant={{ keystone_demo_tenant }} user={{ keystone_demo_username }}
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=_member_ tenant={{ keystone_demo_tenant }} user={{ keystone_demo_username }}
 
 
 ## SERVICE ENDPOINT

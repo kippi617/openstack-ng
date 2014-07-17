@@ -4,7 +4,7 @@ admin_token: 1231412342341234wqwe
 
 ### MySQL DB info
 mysql_login_user: root
-mysql_login_password: ''
+mysql_login_password: 'passw0rd'
 mysql_login_host: 'controller'
 
 ## MySQL Databases for each service ##

@@ -6,11 +6,14 @@
 ##   yum: name=MySQL-python state=present
  
 - name: install mysql server
-  apt: name=mysql-server state=present
+  apt: name={{ item }} state=present
+  with_items:
+  	- mysql-server
+  	- python-mysqldb
 
-- name: configure MySQLd
-  copy: src=my.cnf dest=/etc/mysql/my.cnf
-  notify: restart mysql
+# - name: configure MySQLd
+#   copy: src=my.cnf dest=/etc/mysql/my.cnf
+#   notify: restart mysql
 
 - name: Enable and startup service
   service: name=mysql enabled=yes
