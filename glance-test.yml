@@ -3,7 +3,7 @@
 - hosts: glance
   tasks:
   - name: install wget
-    yum: name=wget state=present
+    apt: name=wget state=present
 
   - name: fetch image
     get_url: url=http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img dest=/tmp/images/cirros-0.3.2-x86_64-disk.img

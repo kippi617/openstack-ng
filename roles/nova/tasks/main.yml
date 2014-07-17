@@ -1,7 +1,7 @@
 ---
 
 - name: install nova and dependencies
-  yum: name={{ item }} state=present
+  apt: name={{ item }} state=present
   with_items:
   - nova-compute-kvm
   - python-guestfs
