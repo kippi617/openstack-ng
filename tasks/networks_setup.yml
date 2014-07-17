@@ -1,0 +1,82 @@
+#set up basic networks 
+
+--
+- name: Setup basic external network
+  neutron_network: 
+    login_user={{ keystone_admin_username }}
+    login_password={{ keystone_admin_password }}
+    login_tenant_name={{ keystone_admin_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    state=present
+    router_external=yes
+    shared=yes
+    description={{ external_network_name }}
+
+- name: Setup external subnet
+  neutron_subnet:
+    login_user={{ keystone_admin_username }}
+    login_password={{ keystone_admin_password }}
+    login_tenant_name={{ keystone_admin_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    network_name={{ external_network_name }}
+    state=present
+    cidr={{ external_network_cidr }}
+    tenant_name={{ keystone_admin_tenant }}
+    enable_dhcp=false
+    gateway_ip={{ external_network_gw }}
+    allocation_pool_start={{ external_network_allocation_pool_start }}
+    allocation_pool_end={{ external_network_allocation_pool_end }} 
+
+- name: Setup tenant internal network
+  neutron_network:
+    login_user={{ keystone_demo_username }}
+    login_password={{ keystone_demo_password }}
+    login_tenant_name={{ keystone_demo_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    state=present
+    description={{ tenant_network_name }}
+
+- name: Setup tenant subnet
+  neutron_subnet:
+    login_user={{ keystone_demo_username }}
+    login_password={{ keystone_demo_password }}
+    login_tenant_name={{ keystone_demo_tenant }}
+    network_name={{ tenant_network_name }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    state=present
+    cidr={{ tenant_network_cidr }}
+    tenant_name={{ keystone_demo_tenant }}
+    gateway_ip={{ tenant_network_gw }}
+    allocation_pool_start={{ tenant_network_allocation_pool_start }}
+    allocation_pool_end={{ tenant_network_allocation_pool_end }} 
+
+- name: Create tenant router
+  neutron_router:
+    login_user={{ keystone_demo_username }}
+    login_password={{ keystone_demo_password }}
+    login_tenant_name={{ keystone_demo_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    state=present
+    name={{ tenant_network_router_name }}
+    tenant_name={{ keystone_demo_tenant }}
+
+- name: Attach router to tenant subnet
+  neutron_router_interface: state=present 
+    login_user={{ keystone_demo_username }}
+    login_password={{ keystone_demo_password }}
+    login_tenant_name={{ keystone_demo_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    router_name={{ tenant_network_router_name }}
+    subnet_name={{ tenant_network_name }}
+    tenant_name={{ keystone_demo_tenant }}
+    
+
+- name: Attach router to external network
+  neutron_router_gateway: state=present 
+    login_user={{ keystone_demo_username }}
+    login_password={{ keystone_demo_password }}
+    login_tenant_name={{ keystone_demo_tenant }}
+    auth_url="{{ keystone_service_public_ip }}:35357/v2.0/"
+    router_name={{ tenant_network_router_name }}
+    network_name={{ external_network_name }}    
+

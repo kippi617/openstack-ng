@@ -70,3 +70,7 @@
   roles:
   - role: openstack-common
   - role: nova
+
+- hosts: controller
+  tasks:
+    - include: tasks/networks_setup.yml
