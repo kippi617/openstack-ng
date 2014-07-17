@@ -1,0 +1,30 @@
+---
+# Loosely based on:
+# http://docs.openstack.org/icehouse/install-guide/install/apt/content/neutron-ml2-controller-node.html
+# Compute node Neutron config
+#
+
+- name: Install required networking components
+  apt: name={{ item }} state=present
+  with_items:
+    - neutron-common
+    - neutron-plugin-openvswitch-agent
+    - neutron-plugin-ml2
+
+- name: Configure Neutron
+  template: src{{ item.src }} dest={{ item.dest }} backup=yes
+  with_items:
+    - { 'src': 'neutron.conf.j2', 'dest': '/etc/neutron/neutron.conf' }
+    - { 'src': 'ml2_conf.ini.conf.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
+
+- name: Restart OpenVSwtich
+  service: name=openvswitch-switch state=restarted
+
+- name: Add integration bridge
+  openvswitch_bridge: bridge=br-int state=present
+
+- name: Restarting Services
+  service: name:{{ item }} state=restarted
+  with_items:
+    - nova-compute
+    - neutron-plugin-openvswitch-agent
