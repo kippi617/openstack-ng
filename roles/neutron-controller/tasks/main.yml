@@ -3,24 +3,6 @@
 # http://docs.openstack.org/icehouse/install-guide/install/apt/content/neutron-ml2-controller-node.html
 # Controller node Neutron config
 #
-
-- name: Drop neutron DB
-  mysql_db: name={{ mysql_neutron_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
-  when: neutron_force_init == True
-
-- name: Create neutron DB
-  mysql_db: name={{ mysql_neutron_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
-
-- name: Create neutron user
-  mysql_user: name={{ mysql_neutron_user }} state=present host='{{ item }}' password="{{ mysql_neutron_password }}" priv={{ mysql_neutron_db }}.*:ALL login_user={{ mysql_login_user }} login_password={{ mysql_login_password }} login_host={{ mysql_login_host }}
-  with_items: groups['glance']
-
-- name: Create neutron keystone user
-  keystone_user: token={{ admin_token }} user={{ neutron_service_user }} password={{ neutron_service_password }} tenant={{ neutron_service_tenant }} email={{ keystone_admin_email }}
-
-- name: Create neutron keystone service
-  keystone_service: token={{ admin_token }} name=neutron type=network description="Openstack Networking" public_url='http://{{ neutron_service_public_ip }}:9696'
-
 - name: Install required networking components
   apt: name={{ item }} state=present
   with_items:
@@ -28,13 +10,13 @@
     - neutron-plugin-ml2
 
 - name: Configure Neutron
-  template: src{{ item.src }} dest={{ item.dest }} backup=yes
+  template: src={{ item.src }} dest={{ item.dest }} backup=yes
   with_items:
     - { 'src': 'neutron.conf.j2', 'dest': '/etc/neutron/neutron.conf' }
-    - { 'src': 'ml2_conf.ini.conf.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
+    - { 'src': 'ml2_conf.ini.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
 
 - name: Restarting Services
-  service: name:{{ item }} state=restarted
+  service: name={{ item }} state=restarted
   with_items:
     - nova-api
     - nova-scheduler

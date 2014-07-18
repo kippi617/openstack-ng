@@ -404,11 +404,12 @@ auth_host={{ h }}
 {% endfor %}
 auth_port=35357
 auth_protocol=http
-
+{% for h in groups['neutron'] %}
+{% set myvars=hostvars[h] %}
 admin_tenant_name={{ service_tenant }}
-admin_user={{ neutron_service_user }}
-admin_password={{ neutron_service_user_password }}
-
+admin_user={{ myvars.neutron_service_user }}
+admin_password={{ myvars.neutron_service_user_password }}
+{% endfor %}
 
 [database]
 # This line MUST be changed to actually run the plugin.

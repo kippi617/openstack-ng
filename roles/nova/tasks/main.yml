@@ -5,9 +5,10 @@
   with_items:
   - nova-compute-kvm
   - python-guestfs
+  - python-mysqldb
 
 - name: Make kernel readable from non root users
-  shell: dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
+  shell: dpkg-statoverride --force --update --add root root 0644 /boot/vmlinuz-$(uname -r)
 
 - name: Make kernel readable from non root persistent
   copy: src=templates/statoverride dest=/etc/kernel/postinst.d/statoverride owner=root mode=0755
@@ -17,17 +18,6 @@
   when: nova_force_init == True
   with_items:
   - nova-compute
-
-- name: drop nova DB
-  mysql_db: name={{ mysql_nova_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
-  when: nova_force_init == True
-
-- name: create nova DB
-  mysql_db: name={{ mysql_nova_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
-
-- name: create nova user
-  mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL  login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
-  with_items: groups['nova']
 
 - name: configure nova
   template: src=nova.conf.j2 dest=/etc/nova/nova.conf backup=yes

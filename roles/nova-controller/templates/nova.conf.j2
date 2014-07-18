@@ -256,7 +256,12 @@ rabbit_password={{ rabbit_password }}
 
 # IP address of this host (string value)
 #my_ip=10.0.0.1
-my_ip = {{ nova_service_public_ip }}
+{% for h in groups['nova'] %}
+{% set myvars=hostvars[h] %}
+
+my_ip = {{ myvars.nova_service_public_ip }}
+
+{% endfor %}
 
 # Name of this node.  This can be an opaque identifier.  It is
 # not necessarily a hostname, FQDN, or IP address. However,
@@ -1515,7 +1520,7 @@ neutron_admin_tenant_name={{ myvars.neutron_service_tenant }}
 # Region name for connecting to neutron in admin context
 # (string value)
 #neutron_region_name=<None>
-neutron_region_name={{ neutron_service_region }}
+neutron_region_name={{ myvars.neutron_service_region }}
 
 # Authorization URL for connecting to neutron in admin context
 # (string value)
@@ -2069,8 +2074,9 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 # Location of VNC console proxy, in the form
 # "http://127.0.0.1:6080/vnc_auto.html" (string value)
 #novncproxy_base_url=http://127.0.0.1:6080/vnc_auto.html
-
-novncproxy_base_url = http://{{nova_service_public_ip}}:6080/vnc_auto.html
+{% for h in groups['nova'] %}
+{% set myvars=hostvars[h] %}
+novncproxy_base_url = http://{{myvars.nova_service_public_ip}}:6080/vnc_auto.html
 
 # Location of nova xvp VNC console proxy, in the form
 # "http://127.0.0.1:6081/console" (string value)
@@ -2079,13 +2085,13 @@ novncproxy_base_url = http://{{nova_service_public_ip}}:6080/vnc_auto.html
 # IP address on which instance vncservers should listen
 # (string value)
 #vncserver_listen=127.0.0.1
-vncserver_listen = {{ nova_service_public_ip }}
+vncserver_listen = {{ myvars.nova_service_public_ip }}
 
 # The address to which proxy clients (like nova-xvpvncproxy)
 # should connect (string value)
-vncserver_proxyclient_address={{ nova_service_public_ip }}
+vncserver_proxyclient_address={{ myvars.nova_service_public_ip }}
 #vncserver_proxyclient_address = 10.0.0.31
-
+{% endfor %}
 # Enable VNC related features (boolean value)
 #vnc_enabled=true
 vnc_enabled = True
@@ -2772,12 +2778,15 @@ auth_protocol=http
 
 # Keystone account username (string value)
 #admin_user=%SERVICE_USER%
-admin_user={{ nova_service_user }}
+{% for h in groups['nova'] %}
+{% set myvars=hostvars[h] %}
+admin_user={{ myvars.nova_service_user }}
 
 # Keystone account password (string value)
 #admin_password=%SERVICE_PASSWORD%
-admin_password={{ nova_service_user_password }}
+admin_password={{ myvars.nova_service_user_password }}
 
+{% endfor %}
 # Keystone service account tenant name to validate user tokens
 # (string value)
 #admin_tenant_name=%SERVICE_TENANT_NAME%

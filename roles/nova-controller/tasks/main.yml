@@ -26,26 +26,11 @@
   - nova-novncproxy
   - nova-scheduler
 
-- name: drop nova DB
-  mysql_db: name={{ mysql_nova_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
-  when: nova_force_init == True
-
-- name: create nova DB
-  mysql_db: name={{ mysql_nova_db }} state=present login_host={{ mysql_login_host }} login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
-
-- name: create nova user
-  mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL  login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
-  with_items: groups['nova']
-
 - name: configure nova
   template: src=nova.conf.j2 dest=/etc/nova/nova.conf backup=yes
 
 - name: Remove default db nova.sqlite database
   file: path=/var/lib/nova/nova.sqlite state=absent
-
-- name: Nova initialize DB
-  nova_manage: action=db_sync
-  when: nova_force_init == True
 
 - name: Create keystone service
   keystone_service: token={{ admin_token }} name=nova type=compute description="Compute Service" public_url="http://{{ nova_service_public_ip }}:8774/v2/%\(tenant_id\)s"

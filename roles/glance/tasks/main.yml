@@ -33,10 +33,10 @@
   file:  path=/var/lib/glance/glance.sqlite state=absent
 
 # # Initialize the database schema. A deprecation warning is OK...
-# sudo -u glance glance-manage db_sync
+# sudo -umy.c glance glance-manage db_sync
 
-- name: Glance db sync
-  glance_manage: action=db_sync
+- name: Initialize glance DB
+  shell: glance-manage db_sync
 
 - name: Register glance on keystone
   keystone_service: token={{ admin_token }} name=glance type=image description="OpenStack Image Service" public_url="http://{{ glance_service_public_ip }}:9292" region=regionOne
