@@ -18,3 +18,7 @@
 
 - name: enable rabbitmq-server server
   service: name=rabbitmq-server state=started enabled=yes
+  wait_for: port=58742 state=started delay=5 timeout=20
+
+- name: change rabbit user password
+  rabbitmq_user: user=guest password={{ rabbit_password }} node=rabbit@{{ ansible_hostname }}

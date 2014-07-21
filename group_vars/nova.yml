@@ -1,8 +1,5 @@
 ---
 
-nova_service_user: nova
-nova_service_user_password: nova
-nova_service_user_email: nova@example.com
 nova_service_mysql_user: nova
 nova_service_mysql_user_password: nova
 

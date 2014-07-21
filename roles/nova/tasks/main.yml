@@ -25,10 +25,6 @@
 - name: Remove default nova.sqlite DB
   file: path=/var/lib/nova/nova.sqlite state=absent
 
-- name: initialize DB
-  nova_manage: action=db_sync
-  when: nova_force_init == True
-
 - name: start and enable nova services
   service: name={{ item }} state=restarted enabled=yes
   with_items:

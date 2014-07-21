@@ -32,6 +32,13 @@
 - name: Remove default db nova.sqlite database
   file: path=/var/lib/nova/nova.sqlite state=absent
 
+- name: Create Nova user
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" user={{ nova_service_user }} password={{ nova_service_password }} email={{ nova_service_email }}
+
+- name: Link nova user to admin role
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=admin user={{ nova_service_user }} tenant={{ service_tenant }}
+
+
 - name: Create keystone service
   keystone_service: token={{ admin_token }} name=nova type=compute description="Compute Service" public_url="http://{{ nova_service_public_ip }}:8774/v2/%\(tenant_id\)s"
 

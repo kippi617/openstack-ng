@@ -15,6 +15,17 @@
     - { 'src': 'neutron.conf.j2', 'dest': '/etc/neutron/neutron.conf' }
     - { 'src': 'ml2_conf.ini.j2', 'dest': '/etc/neutron/plugins/ml2/ml2_conf.ini' }
 
+- name: Create neutron user
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" user={{ neutron_service_user }} password={{ neutron_service_password }} email={{ neutron_service_email }}
+
+- name: Link neturon user to admin role
+  keystone_user: token={{ admin_token }} endpoint="http://{{ keystone_service_public_ip }}:35357/v2.0/" role=admin user={{ neturon_service_user }} tenant={{ service_tenant }}
+
+
+- name: Create neutron service
+  keystone_service: token={{ admin_token }} name=neutron type=network description="Networking" public_url="http://{{ neutron_service_public_ip }}:9696"
+
+
 - name: Restarting Services
   service: name={{ item }} state=restarted
   with_items:

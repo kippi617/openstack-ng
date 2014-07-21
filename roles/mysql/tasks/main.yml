@@ -18,6 +18,8 @@
 - name: Enable and startup service
   service: name=mysql enabled=yes
 
+- name: Setup mysql password
+  shell: mysqladmin -u {{ mysql_login_user }} password {{ mysql_login_password }}
 
 - name: drop nova DB
   mysql_db: name={{ mysql_nova_db }} state=absent  login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
@@ -26,9 +28,13 @@
 - name: create nova DB
   mysql_db: name={{ mysql_nova_db }} state=present  login_user={{ mysql_login_user }}  login_password={{ mysql_login_password }}
 
-- name: create nova user
+- name: create nova user for compute
   mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL  login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
   with_items: groups['nova']
+
+- name: create nova user for controller
+  mysql_user: name={{ mysql_nova_user }} state=present host='{{ item }}' password="{{ mysql_nova_password }}" priv={{ mysql_nova_db }}.*:ALL  login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
+  with_items: groups['controller']
 
 #### Maybe better to do it from each node?
 ### - name: Add nodes to MySQL allowed list

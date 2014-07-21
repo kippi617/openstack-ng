@@ -304,7 +304,7 @@ my_ip = {{ nova_service_public_ip }}
 
 # Top-level directory for maintaining nova's state (string
 # value)
-#state_path=/var/lib/nova
+state_path=/var/lib/nova
 
 
 #
@@ -893,7 +893,7 @@ neutron_metadata_proxy_shared_secret={{ myvars.neutron_metadata_proxy_shared_sec
 #defer_iptables_apply=false
 
 # Where instances are stored on disk (string value)
-#instances_path=$state_path/instances
+instances_path=$state_path/instances
 
 # Generate periodic compute.instance.exists notifications
 # (boolean value)

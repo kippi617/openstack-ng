@@ -39,6 +39,7 @@
 - name: make sure plugin.ini is there
   file: src=/etc/neutron/plugins/ml2/ml2_conf.ini dest=/etc/neutron/plugin.ini state=link force=yes
 
+
 - name: start OpenVSwitch
   service: name=openvswitch-switch state=restarted enabled=yes
 

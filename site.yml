@@ -14,7 +14,7 @@
     - set_fact: glance_service_public_ip={{ glance_service_public_ip }}
     - set_fact: glance_service_internal_ip={{ glance_service_internal_ip }}
 
-- hosts: nova:controller
+- hosts: nova
   tasks:
     - set_fact: nova_service_admin_ip={{ nova_service_admin_ip }}
     - set_fact: nova_service_public_ip={{ nova_service_public_ip }}
@@ -58,6 +58,12 @@
   roles:
   - role: glance
 
+- hosts: controller
+  sudo: yes
+  roles:
+    - role: nova-controller
+    - role: neutron-controller
+
 - hosts: neutron
   sudo: yes
   roles:
@@ -70,10 +76,5 @@
   - role: neutron-compute
 
 - hosts: controller
-  sudo: yes
-  roles:
-    - role: nova-controller
-    - role: neutron-controller
-
   tasks:
     - include: tasks/networks_setup.yml

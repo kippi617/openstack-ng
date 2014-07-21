@@ -130,13 +130,6 @@ public_port=5000
 # upon receiving exception data from an rpc call. (list value)
 #allowed_rpc_exception_modules=oslo.messaging.exceptions,nova.exception,cinder.exception,exceptions
 
-# Qpid broker hostname. (string value)
-#qpid_hostname=localhost
-#
-# {% for qpid in groups['qpid'] %}
-# qpid_hostname={{ qpid }}
-# {% endfor %}
-
 # Qpid broker port. (integer value)
 #qpid_port=5672
 
@@ -379,7 +372,7 @@ public_port=5000
 
 # Print more verbose output (set logging level to INFO instead
 # of default WARNING level). (boolean value)
-#verbose=false
+verbose=false
 
 # Log output to standard error (boolean value)
 #use_stderr=false
@@ -445,7 +438,7 @@ public_port=5000
 # (Optional) The base directory used for relative --log-file
 # paths (string value)
 # Deprecated group/name - [DEFAULT]/logdir
-#log_dir=<None>
+log_dir=/var/log/keystone
 
 # Use syslog for logging. Existing syslog format is DEPRECATED
 # during I, and then will be changed in J to honor RFC5424

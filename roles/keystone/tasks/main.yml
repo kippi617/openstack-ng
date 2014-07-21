@@ -7,6 +7,9 @@
   service: name=keystone state=stopped
   when: keystone_force_init == True
 
+- name: Cleanup mysqlhosts
+  shell: mysqladmin flush-hosts
+
 - name: drop keystone DB
   mysql_db: name={{ mysql_keystone_db }} state=absent login_host={{ mysql_login_host }} login_user={{ mysql_login_user }} login_password={{ mysql_login_password }}
   when: keystone_force_init == True
@@ -32,14 +35,6 @@
   template: src=keystone.conf.j2 dest=/etc/keystone/keystone.conf backup=yes
   notify: restart keystone
 
-- name: enable keystone
-  service: name=keystone enabled=yes
-  notify: restart keystone
-
-- name: start keystone
-  service: name=keystone state=started
-  when: keystone_force_init == True
-
 ##OStack  environment:
 ##OStack    SERVICE_TOKEN: "{{ admin_token }}"
 ##OStack    SERVICE_ENDPOINT: http://{{ ansible_default_ipv4['address'] }}:35357/v2.0
@@ -52,9 +47,9 @@
 
 - name: Keystone db_sync
   keystone_manage: action=dbsync
-  
+
 - name: Restart Keystone
-  service: name=keystone state=restarted
+  service: name=keystone state=restarted enabled=yes
 
 ## ADMIN USER
 - name: Create keystone admin tenant
@@ -85,4 +80,4 @@
 
 ## SERVICE ENDPOINT
 - name: Add keystone identity endpoint and service
-  keystone_service: token={{ admin_token }} name=keystone type=identity description="Identity Service" public_url="http://{{ keystone_service_public_ip }}:5000/v2.0" region=regionOne
+  keystone_service: token={{ admin_token }} name=keystone type=identity description="Identity Service" public_url="http://{{ keystone_service_public_ip }}:5000/v2.0" admin_url="http://{{ keystone_service_admin_ip }}:35357/v2.0" region=regionOne

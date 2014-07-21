@@ -1,8 +1,5 @@
 ---
 
-neutron_service_user: neutron
-neutron_service_user_password: neutronpw
-neutron_service_user_email: neutron@example.com
 neutron_service_mysql_user: neutron
 neutron_service_mysql_user_password: neutronpw
 neutron_service_tenant: service
